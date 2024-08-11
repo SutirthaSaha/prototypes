@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Server-Sent Events Example with Flask</title>
+</head>
+<body>
+    <h1>Server-Sent Events Example with Flask</h1>
+    <div id="messages"></div>
+
+    <script>
+        // Create a new EventSource instance pointing to the /events endpoint
+        const evtSource = new EventSource('/events');
+
+        // Set up a listener for the "message" event
+        evtSource.onmessage = function(event) {
+            // Log the event data (the message from the server)
+            console.log('Received message:', event.data);
+
+            // Optionally, display the message on the web page
+            const messages = document.getElementById('messages');
+            const message = document.createElement('div');
+            message.textContent = event.data;
+            messages.appendChild(message);
+        };
+
+        // Handle any errors that occur
+        evtSource.onerror = function(event) {
+            console.error('EventSource failed:', event);
+        };
+    </script>
+</body>
+</html>
