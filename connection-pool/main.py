@@ -35,7 +35,7 @@ def connect(pool):
 
 def close(connection, pool):
     if pool:
-        connection_pool.put(connection)
+        connection_pool.put_back(connection)
     else:
         connection.close()
 
@@ -79,9 +79,9 @@ def initialize_connection_pool():
 
 @timeit
 def main():
-    pool = True
+    use_pool = False
     num_connections = 1000
-    execute_queries_in_parallel(pool, num_connections)
+    execute_queries_in_parallel(use_pool, num_connections)
 
 
 if __name__ == "__main__":
