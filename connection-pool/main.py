@@ -3,7 +3,9 @@ from mysql.connector import Error
 import threading
 import queue
 
-MAX_POOL_SIZE = 10
+from timeit import timeit
+
+MAX_POOL_SIZE = 100
 connection_pool = queue.Queue(maxsize=MAX_POOL_SIZE)
 
 
@@ -24,15 +26,22 @@ def create_connection():
         return None
 
 
-def connect():
-    return create_connection()
-
-
-def query(pool, query_string="SELECT 1;"):
+def connect(pool):
     if pool:
-        connection = connection_pool.get(block=True)
+        return connection_pool.get(block=True)
     else:
-        connection = connect()
+        return create_connection()
+
+
+def close(connection, pool):
+    if pool:
+        connection_pool.put(connection)
+    else:
+        connection.close()
+
+
+def query(use_pool, query_string="SELECT 1;"):
+    connection = connect(use_pool)
     if connection:
         try:
             cursor = connection.cursor()
@@ -43,20 +52,17 @@ def query(pool, query_string="SELECT 1;"):
             print("Error while executing query")
         finally:
             cursor.close()
-            if pool:
-                connection_pool.put(connection)
-            else:
-                connection.close()
+            close(connection, use_pool)
     else:
         print("Failed to establish a connection")
 
 
-def parallel_queries(pool, num_connections):
-    if pool:
+def execute_queries_in_parallel(use_pool, num_connections):
+    if use_pool:
         initialize_connection_pool()
     threads = []
     for _ in range(num_connections):
-        thread = threading.Thread(target=query, kwargs={'pool': pool})
+        thread = threading.Thread(target=query, kwargs={'use_pool': use_pool})
         threads.append(thread)
         thread.start()
 
@@ -71,10 +77,11 @@ def initialize_connection_pool():
             connection_pool.put(connection)
 
 
+@timeit
 def main():
     pool = True
     num_connections = 1000
-    parallel_queries(pool, num_connections)
+    execute_queries_in_parallel(pool, num_connections)
 
 
 if __name__ == "__main__":
