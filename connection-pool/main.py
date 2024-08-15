@@ -1,12 +1,12 @@
 import mysql.connector
 from mysql.connector import Error
 import threading
-import queue
+from queue import BlockingQueue
 
 from timeit import timeit
 
 MAX_POOL_SIZE = 100
-connection_pool = queue.Queue(maxsize=MAX_POOL_SIZE)
+connection_pool = BlockingQueue(maxsize=MAX_POOL_SIZE)
 
 
 def create_connection():
@@ -28,7 +28,7 @@ def create_connection():
 
 def connect(pool):
     if pool:
-        return connection_pool.get(block=True)
+        return connection_pool.get()
     else:
         return create_connection()
 
