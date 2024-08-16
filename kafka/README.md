@@ -1,4 +1,9 @@
 # Kafka
+
+## Architecture
+
+![](images/img.png)
+
 ## Deploy locally
 
 ### With Zookeeper
@@ -10,8 +15,15 @@ We can configure this dependency in a docker-compose.yml file, which ensures tha
 We have a docker-compose.yml file with two services, namely zookeeper and kafka:
 
 ```sh
+cd setup/zookeeper
 docker-compose up
 ```
 
 ### Without Zookeeper
 
+Now Kafka can run without the Zookeeper module where the implementation for the configuration is replaced by Kraft. Here we deploy the Kafka without Zookeeper and add a UI to it as well.
+
+```sh
+cd setup/kraft
+docker-compose up
+```
