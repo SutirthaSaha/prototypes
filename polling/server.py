@@ -3,7 +3,6 @@ import json
 import time
 
 app = Flask(__name__)
-timeout = 15
 
 
 def get_status():
