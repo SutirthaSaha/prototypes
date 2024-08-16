@@ -12,7 +12,7 @@ class BlockingQueue:
 
     def put(self, item):
         with self.mutex:
-            if self.current_size >= self.maxsize:
+            while self.current_size >= self.maxsize:
                 self.not_full.wait()
             self.queue.append(item)
             self.current_size = self.current_size + 1
