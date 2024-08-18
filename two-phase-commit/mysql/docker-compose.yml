@@ -1,0 +1,10 @@
+services:
+  db:
+    image: mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --bind-address=0.0.0.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./initialize.sql:/docker-entrypoint-initdb.d/initialize.sql
