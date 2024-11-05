@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employee-app-deployment
+  namespace: tracking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: employee-app
+  template:
+    metadata:
+      labels:
+        app: employee-app
+    spec:
+      containers:
+      - name: employee-app
+        image: suti12/elasticsearch-flask:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+          - name: URL
+            value: "https://elasticsearch-master:9200"
+          - name: USERNAME
+            value: "elastic"
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-master-credentials
+                key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: employee-app-service
+  namespace: tracking
+spec:
+  selector:
+    app: employee-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: ClusterIP

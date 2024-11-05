@@ -1,0 +1,14 @@
+elasticsearchHosts: "https://elasticsearch-master:9200"
+
+# Optional: Set the Kibana service type to NodePort or LoadBalancer if you want external access
+service:
+  type: LoadBalancer
+  port: 5601
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
