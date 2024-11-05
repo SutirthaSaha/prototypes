@@ -1,4 +1,6 @@
 import random
+import time
+
 from faker import Faker
 import requests
 import json
@@ -36,3 +38,4 @@ for _ in range(20):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.text)
+    time.sleep(60)
